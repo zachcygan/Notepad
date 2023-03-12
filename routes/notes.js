@@ -2,7 +2,7 @@ const notes = require('express').Router();
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const { readAndAppend, readFromFile } = require('../helpers/fsUtils');
-let db = require('../db/db.json')
+
 
 notes.get('/', (req, res) =>
   readFromFile('./db/db.json').then((data) => res.json(JSON.parse(data)))
@@ -23,22 +23,31 @@ notes.get('/:id', (req, res) => {
     return res.json('No id Found')
 });
 
-// notes.delete('/:id', (req, res) => {
-//     const deleteRequest = req.params.id;
+notes.delete('/:id', async (req, res) => {
+    let db = require('../db/db.json');
+    
+    const deleteRequest = req.params.id;
+    console.log(deleteRequest)
 
-//     // TALK TO ANTHONY
-//     // TAKEN FROM https://stackoverflow.com/questions/65015000/how-do-i-use-express-js-app-delete-to-remove-a-specific-object-from-an-array
-//     db = db.filter(({ id }) => id !== deleteRequest)
+    db.forEach((note, i) => {
+        if (deleteRequest === note.id) {
+            db.splice(i, 1)
+        }
+    })
 
-//     var json = JSON.stringify(db);
+    let json = JSON.stringify(db, null, 2);
 
-//     fs.writeFile('./db/db.json', json, err => {
-//         if (err) {
-//             console.error(err);
-//         }
-//         // file written successfully
-//     });
-// });
+    fs.writeFile('./db/db.json', json, err => {
+        if (err) {
+            console.error(err);
+            res.status(500).send(err)
+        } else {
+            console.log('Deleted request handled')
+            res.status(200).send('successful deletion')
+        }
+    })
+
+});
 
 notes.post('/', (req, res) => {
     console.log(req.body);
