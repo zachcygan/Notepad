@@ -27,7 +27,6 @@ notes.delete('/:id', async (req, res) => {
     let db = require('../db/db.json');
     
     const deleteRequest = req.params.id;
-    console.log(deleteRequest)
 
     db.forEach((note, i) => {
         if (deleteRequest === note.id) {
@@ -42,7 +41,7 @@ notes.delete('/:id', async (req, res) => {
             console.error(err);
             res.status(500).send(err)
         } else {
-            console.log('Deleted request handled')
+            console.log('❌Delete request handled❌')
             res.status(200).send('successful deletion')
         }
     })
