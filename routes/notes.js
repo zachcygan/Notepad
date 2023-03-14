@@ -23,14 +23,16 @@ notes.get('/:id', (req, res) => {
     return res.json('No id Found')
 });
 
-notes.delete('/:id', async (req, res) => {
+notes.delete('/:id', (req, res) => {
     let db = require('../db/db.json');
     
     const deleteRequest = req.params.id;
 
     db.forEach((note, i) => {
+        console.log(note.id)
         if (deleteRequest === note.id) {
-            db.splice(i, 1)
+            console.log('DELETED ' + note.id)
+            db.splice(i, 1);
         }
     })
 
