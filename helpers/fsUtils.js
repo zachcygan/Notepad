@@ -25,10 +25,40 @@ const readAndAppend = (content, file) => {
       console.error(err);
     } else {
       const parsedData = JSON.parse(data);
+
+
       parsedData.push(content);
       writeToFile(file, parsedData);
     }
   });
 };
 
-module.exports = { readFromFile, writeToFile, readAndAppend };
+const readAndDelete = (file, id) => {
+  const deleteRequest = id;
+
+  fs.readFile(file, 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+    } else {
+      const parsedData = JSON.parse(data);
+
+      parsedData.forEach((note, i) => {
+        if (deleteRequest === note.id) {
+            parsedData.splice(i, 1);
+        }
+      })
+
+      let json = JSON.stringify(parsedData, null, 2);
+
+      fs.writeFile(file, json, err => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log('❌Delete request handled❌')
+        }
+      })
+    }
+  });
+}
+
+module.exports = { readFromFile, writeToFile, readAndAppend, readAndDelete };

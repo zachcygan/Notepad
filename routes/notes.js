@@ -1,7 +1,7 @@
 const notes = require('express').Router();
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
-const { readAndAppend, readFromFile } = require('../helpers/fsUtils');
+const { readAndAppend, readFromFile, readAndDelete } = require('../helpers/fsUtils');
 
 
 notes.get('/', (req, res) =>
@@ -24,30 +24,33 @@ notes.get('/:id', (req, res) => {
 });
 
 notes.delete('/:id', (req, res) => {
-    let db = require('../db/db.json');
-    
     const deleteRequest = req.params.id;
 
-    db.forEach((note, i) => {
-        console.log(note.id)
-        if (deleteRequest === note.id) {
-            console.log('DELETED ' + note.id)
-            db.splice(i, 1);
-        }
-    })
-
-    let json = JSON.stringify(db, null, 2);
-
-    fs.writeFile('./db/db.json', json, err => {
+    fs.readFile('./db/db.json', 'utf8', (err, data) => {
         if (err) {
             console.error(err);
-            res.status(500).send(err)
         } else {
-            console.log('❌Delete request handled❌')
-            res.status(200).send('successful deletion')
-        }
-    })
+            const parsedData = JSON.parse(data);
+            
+            parsedData.forEach((note, i) => {
+                if (deleteRequest === note.id) {
+                    parsedData.splice(i, 1);
+                }
+            })
 
+            let json = JSON.stringify(parsedData, null, 2);
+
+            fs.writeFile('./db/db.json', json, err => {
+                if (err) {
+                    console.error(err);
+                    res.status(500).send(err)
+                } else {
+                    console.log('❌Delete request handled❌')
+                    res.status(200).send('successful deletion')
+                }
+            })
+        }
+    });    
 });
 
 notes.post('/', (req, res) => {
