@@ -21,8 +21,8 @@ To begin installing the program, to be sure to type "npm i" inside the terminal 
 
 ## Screenshots
 
-![screenshot of the website](public/assets/images/screenshot.png)
-![screenshot of the website](public/assets/images/screenshot2.png)
-![screenshot of the website](public/assets/images/screenshot3.png)
+![screenshot of the website](/public/assets/images/screenshot.png)
+![screenshot of the website](/public/assets/images/screenshot2.png)
+![screenshot of the website](/public/assets/images/screenshot3.png)
 
 
